@@ -36,7 +36,7 @@ jobs:
         run: |
           git config --global user.name 'Mazurovsasha'
           git config --global user.email 'mazurovsasha@gmail.com'
-          git remote set-url origin https://${{ secrets.TOKEN_GITHUB }}@github.com/${{ github.repository }}.git
+          git remote set-url origin https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
           git checkout -b temp-branch
           git add -A
           COMMIT="${{ env.COMMIT_HASH }}.${{ env.COMMIT_DATE }}"

@@ -42,7 +42,8 @@ jobs:
           git add -A
           COMMIT="${{ env.COMMIT_HASH }}.${{ env.COMMIT_DATE }}"
           git commit -m "Deploy to main $COMMIT"
-          git pull origin temp-branch --rebase  # Подтянуть изменения из удаленного репозитория
+          git fetch origin
+          git pull origin temp-branch 
           git push origin temp-branch
           git checkout main
           git pull origin main

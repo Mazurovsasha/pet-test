@@ -1,0 +1,48 @@
+name: Deploy to Main
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build project
+        run: npm run build
+
+      - name: Extract commit info
+        id: extract-info
+        run: |
+          echo "COMMIT_HASH=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+          echo "COMMIT_DATE=$(date -u +%Y%m%d)" >> $GITHUB_ENV      
+
+      - name: Deploy to main
+        if: github.ref == 'refs/heads/dev'
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git remote set-url origin https://${{ secrets.TOKEN_GITHUB }}@github.com/${{ github.repository }}.git
+          git checkout -b temp-branch
+          git add -A
+          COMMIT="${{ env.COMMIT_HASH }}.${{ env.COMMIT_DATE }}"
+          git commit -m "Deploy to main $COMMIT"
+          git push origin temp-branch
+          git checkout main
+          git pull origin main
+          git merge temp-branch
+          git push origin main
+          git branch -d temp-branch

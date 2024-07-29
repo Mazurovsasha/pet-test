@@ -37,9 +37,15 @@ jobs:
           git config --global user.name 'Mazurovsasha'
           git config --global user.email 'mazurovsasha@gmail.com'
           git remote set-url origin https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+          git fetch origin
           git checkout -b temp-branch
           git add -A
           COMMIT="${{ env.COMMIT_HASH }}.${{ env.COMMIT_DATE }}"
           git commit -m "Deploy to main $COMMIT"
-          git push origin main
+          git push origin temp-branch
+          git checkout main
+          git pull origin main --rebase 
+          git merge temp-branch
+          git push origin main 
+          git branch -d temp-branch
 

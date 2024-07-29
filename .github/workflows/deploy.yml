@@ -43,7 +43,6 @@ jobs:
           git commit -m "Deploy to main $COMMIT"
           git push origin temp-branch
           git checkout main
-          git pull origin main
           git merge temp-branch
           git push origin main
           git branch -d temp-branch

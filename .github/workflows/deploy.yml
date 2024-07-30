@@ -49,9 +49,9 @@ jobs:
           git fetch origin
           git checkout main
 
-      - name: Copy build files
-        run: |
-          cp -r build/* .
+      # - name: Copy build files
+      #   run: |
+      #     cp -r build/* .
 
       - name: Commit and push build to main
         env:

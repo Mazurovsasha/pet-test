@@ -42,16 +42,20 @@ jobs:
       - name: Commit changes to Dev
         run: |
           git add .
-          git commit -m "Committing changes before checkout to main"
+          git commit -m "Committing changes before checkout to main" || echo "No changes to commit"
 
       - name: Checkout main branch
         run: |
           git fetch origin
           git checkout main
 
-      # - name: Copy build files
-      #   run: |
-      #     cp -r build/* .
+      - name: Clear existing files in main
+        run: |
+          find . -maxdepth 1 ! -name 'build' ! -name '.git' ! -name '.github' -exec rm -rf {} +
+
+      - name: Copy build files
+        run: |
+          if [ -d build ]; then cp -r build/* .; fi
 
       - name: Commit and push build to main
         env:
@@ -59,6 +63,5 @@ jobs:
         run: |
           git add .
           COMMIT="${{ env.COMMIT_HASH }}.${{ env.COMMIT_DATE }}"
-          git commit -m "Deploy build to main $COMMIT"
-          git push origin main      
-
+          git commit -m "Deploy build to main $COMMIT" || echo "No changes to commit"
+          git push origin main

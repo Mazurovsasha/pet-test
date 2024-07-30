@@ -25,28 +25,35 @@ jobs:
         continue-on-error: true
         run: npm run build
 
+      - name: List build directory
+        run: ls -la build
+
       - name: Extract commit info
         id: extract-info
         run: |
           echo "COMMIT_HASH=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
-          echo "COMMIT_DATE=$(date -u +%Y%m%d)" >> $GITHUB_ENV      
+          echo "COMMIT_DATE=$(date -u +%Y%m%d)" >> $GITHUB_ENV
 
-      - name: Deploy to main
-        if: github.ref == 'refs/heads/dev'
+      - name: Configure git
         run: |
-          git config --global user.name 'Mazurovsasha'
-          git config --global user.email 'mazurovsasha@gmail.com'
-          git remote set-url origin https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
+      - name: Checkout main branch
+        run: |
           git fetch origin
-          git checkout -b temp-branch
-          git add -A
-          COMMIT="${{ env.COMMIT_HASH }}.${{ env.COMMIT_DATE }}"
-          git commit -m "Deploy to main $COMMIT"
-          git fetch origin
-          git pull origin temp-branch 
-          git push origin temp-branch
           git checkout main
-          git pull origin main
-          git merge temp-branch
-          git push origin main
-          git branch -d temp-branch
+
+      - name: Copy build files
+        run: |
+          cp -r build/* .
+
+      - name: Commit and push build to main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git add .
+          COMMIT="${{ env.COMMIT_HASH }}.${{ env.COMMIT_DATE }}"
+          git commit -m "Deploy build to main $COMMIT"
+          git push origin main      
+

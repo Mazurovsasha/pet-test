@@ -39,6 +39,11 @@ jobs:
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
 
+      - name: Commit changes to Dev
+        run: |
+          git add .
+          git commit -m "Committing changes before checkout to main"
+
       - name: Checkout main branch
         run: |
           git fetch origin

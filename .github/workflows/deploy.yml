@@ -49,6 +49,10 @@ jobs:
           git fetch origin
           git checkout main
 
+      - name: Remove all files except .gitignore in main
+        run: |
+          find . -not -name '.gitignore' -delete
+
       - name: Copy build files
         run: |
           cp -r build/* .

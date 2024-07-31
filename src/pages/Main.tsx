@@ -29,7 +29,7 @@ export default function Main() {
       <News />
       <Goals />
       <Feedback />
-      <FAQQ/>
+      <FAQQQ/>
       <Epilogue />
       <PreRegistration />
     </main>

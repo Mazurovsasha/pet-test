@@ -51,7 +51,7 @@ jobs:
 
       - name: Remove all files except .gitignore in main
         run: |
-          find . -not -name '.gitignore' -not -path './build/*' -delete
+          find . -not -name '.gitignore'
 
       - name: Copy build files
         run: |
